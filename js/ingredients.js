@@ -1,0 +1,130 @@
+// Nutrition per 100 g (ml for liquids), as bought/raw, from USDA FoodData Central,
+// the Canadian Nutrient File, or the package label for branded items.
+// `src` gives the FoodData Central id (FDC) or the label it came from.
+// Liquids marked `ml: true` were converted from per-100 g with the density noted.
+// Citrus (lemon, lime, orange, grapefruit) is counted as its juice: `each` is the
+// juice of one fruit, so recipes list grams of juice.
+export const SECTIONS = [
+  { id: 'produce', name: 'Produce' },
+  { id: 'meat', name: 'Meat & fish' },
+  { id: 'dairy', name: 'Dairy & eggs' },
+  { id: 'bakery', name: 'Bakery' },
+  { id: 'frozen', name: 'Frozen' },
+  { id: 'pantry', name: 'Pantry' },
+  { id: 'drinks', name: 'Drinks' },
+];
+
+export const ING = {
+  // Produce
+  'broccoli': { name: 'Broccoli', kcal: 34, p: 2.8, sec: 'produce', each: 350, eachName: 'crown', src: 'USDA 170379' },
+  'zucchini': { name: 'Zucchini', kcal: 17, p: 1.2, sec: 'produce', each: 200, eachName: 'zucchini', src: 'USDA 169291' },
+  'mushrooms': { name: 'White mushrooms', kcal: 22, p: 3.1, sec: 'produce', src: 'USDA 169251' },
+  'bell-pepper': { name: 'Bell peppers', kcal: 26, p: 1.0, sec: 'produce', each: 150, eachName: 'pepper', src: 'USDA 170108' },
+  'onion': { name: 'Onions (yellow or red)', kcal: 40, p: 1.1, sec: 'produce', each: 150, eachName: 'onion', src: 'USDA 170000' },
+  'garlic': { name: 'Garlic', kcal: 149, p: 6.4, sec: 'produce', each: 5, eachName: 'clove', src: 'USDA 169230' },
+  'tomato': { name: 'Tomatoes', kcal: 18, p: 0.9, sec: 'produce', src: 'USDA 170457' },
+  'cucumber': { name: 'English cucumber', kcal: 15, p: 0.7, sec: 'produce', src: 'USDA 168409' },
+  'parsley': { name: 'Fresh parsley', kcal: 36, p: 3.0, sec: 'produce', src: 'USDA 170416' },
+  'cilantro': { name: 'Fresh cilantro', kcal: 23, p: 2.1, sec: 'produce', src: 'USDA 169997' },
+  'basil': { name: 'Fresh basil', kcal: 23, p: 3.2, sec: 'produce', src: 'USDA 172232' },
+  'jalapeno': { name: 'Jalapeños', kcal: 29, p: 0.9, sec: 'produce', each: 14, eachName: 'jalapeño', src: 'USDA 168576' },
+  'green-onion': { name: 'Green onions', kcal: 32, p: 1.8, sec: 'produce', each: 15, eachName: 'green onion', src: 'USDA 170005' },
+  'banana-frozen': { name: 'Bananas (peeled, frozen)', kcal: 89, p: 1.1, sec: 'produce', each: 120, eachName: 'banana', src: 'USDA 173944' },
+  'lemon': { name: 'Lemons', kcal: 22, p: 0.4, sec: 'produce', each: 48, eachName: 'lemon', src: 'USDA 167747 (juice)' },
+  'lime': { name: 'Limes', kcal: 25, p: 0.4, sec: 'produce', each: 44, eachName: 'lime', src: 'USDA 168156 (juice)' },
+  'orange': { name: 'Oranges', kcal: 45, p: 0.7, sec: 'produce', each: 86, eachName: 'orange', src: 'USDA 169098 (juice)' },
+  'grapefruit': { name: 'Pink grapefruit', kcal: 39, p: 0.5, sec: 'produce', each: 180, eachName: 'grapefruit', src: 'USDA 167774 (juice; ~180 g per fruit, est.)' },
+
+  // Meat & fish
+  'turkey-ground': { name: 'Lean ground turkey', kcal: 148, p: 19.7, sec: 'meat', src: 'USDA 171505' },
+  'chicken-ground': { name: 'Lean ground chicken', kcal: 143, p: 17.4, sec: 'meat', src: 'USDA 171116' },
+  'chicken-breast': { name: 'Chicken breasts (boneless, skinless)', kcal: 112, p: 22.5, sec: 'meat', src: 'USDA 2646170' },
+  'chicken-thighs': { name: 'Chicken thighs (boneless, skinless)', kcal: 149, p: 18.6, sec: 'meat', src: 'USDA 2646171' },
+  'turkey-pepperoni': { name: 'Turkey pepperoni (sliced)', kcal: 130, p: 20.4, sec: 'meat', src: 'label, Piller\'s Turkey Pepperoni 175 g' },
+
+  // Dairy & eggs
+  'eggs': { name: 'Eggs', kcal: 143, p: 12.6, sec: 'dairy', each: 50, eachName: 'egg', src: 'USDA 171287' },
+  'egg-whites': { name: 'Liquid egg whites (carton)', kcal: 48, p: 10.2, sec: 'dairy', src: 'USDA 172203' },
+  'milk': { name: 'Milk (1%)', kcal: 43, p: 3.5, sec: 'dairy', ml: true, src: 'USDA 170872 (×1.03 g/ml)' },
+  'greek-yogurt': { name: 'Plain Greek yogurt (0%)', kcal: 59, p: 10.2, sec: 'dairy', src: 'USDA 170894' },
+  'cottage-cheese': { name: 'Cottage cheese (1%)', kcal: 72, p: 12.4, sec: 'dairy', src: 'USDA 173417' },
+  'cheddar': { name: 'Extra-old cheddar', kcal: 408, p: 23.3, sec: 'dairy', src: 'USDA 328637' },
+  'feta': { name: 'Feta', kcal: 265, p: 14.2, sec: 'dairy', src: 'USDA 173420' },
+  'mozzarella': { name: 'Part-skim mozzarella (shredded)', kcal: 295, p: 23.8, sec: 'dairy', src: 'USDA 171244' },
+  'parmesan': { name: 'Grated parmesan', kcal: 420, p: 28.4, sec: 'dairy', src: 'USDA 171247' },
+
+  // Bakery
+  'pizza-crust': { name: 'Thin pizza crust', kcal: 284, p: 9.0, sec: 'bakery', each: 127, eachName: 'crust', src: 'label, Golden Home Ultra Thin (Canada); each sized to a ~360 kcal crust' },
+  'pita': { name: 'Whole-wheat pitas', kcal: 262, p: 9.8, sec: 'bakery', each: 64, eachName: 'pita', src: 'USDA 174916' },
+  'tortilla': { name: 'High-fibre large tortillas', kcal: 155, p: 11.3, sec: 'bakery', each: 71, eachName: 'tortilla', src: 'label, Mission Carb Balance burrito: 71 g = 110 kcal, 8 g' },
+  'english-muffin': { name: 'Whole-wheat English muffins', kcal: 203, p: 8.8, sec: 'bakery', each: 66, eachName: 'muffin', src: 'USDA 172762' },
+
+  // Frozen
+  'chicken-nuggets': { name: 'Frozen breaded chicken nuggets', kcal: 245, p: 9.4, sec: 'frozen', each: 26.5, eachName: 'nugget', src: 'label, Compliments: 2 nuggets (53 g) = 130 kcal, 5 g' },
+  'spinach-frozen': { name: 'Frozen chopped spinach', kcal: 29, p: 3.6, sec: 'frozen', src: 'USDA 169287' },
+  'blueberries-frozen': { name: 'Frozen blueberries', kcal: 51, p: 0.4, sec: 'frozen', src: 'USDA 173950' },
+  'strawberries-frozen': { name: 'Frozen strawberries', kcal: 35, p: 0.4, sec: 'frozen', src: 'USDA 168173' },
+  'mango-frozen': { name: 'Frozen mango chunks', kcal: 60, p: 0.8, sec: 'frozen', src: 'USDA 169910' },
+  'edamame-frozen': { name: 'Frozen shelled edamame', kcal: 109, p: 11.2, sec: 'frozen', src: 'USDA 168410' },
+
+  // Pantry
+  'oats': { name: 'Rolled oats', kcal: 379, p: 13.2, sec: 'pantry', src: 'USDA 173904' },
+  'oat-flour': { name: 'Oat flour', kcal: 404, p: 14.7, sec: 'pantry', src: 'USDA 169741' },
+  'protein-powder': { name: 'Vanilla whey protein powder', kcal: 395, p: 79, sec: 'pantry', each: 30, eachName: 'scoop', src: 'label, ON Gold Standard Vanilla (Canada): 30.4 g = 120 kcal, 24 g' },
+  'pb-powder': { name: 'Powdered peanut butter (PB2)', kcal: 462, p: 46.2, sec: 'pantry', src: 'label, PB2 Original: 13 g = 60 kcal, 6 g' },
+  'tuna': { name: 'Canned light tuna in water', kcal: 86, p: 19.4, sec: 'pantry', each: 110, eachName: 'can', src: 'USDA 173709 (drained; 170 g can drains to ~110 g)' },
+  'chickpeas': { name: 'Canned chickpeas', kcal: 138, p: 7.0, sec: 'pantry', each: 320, eachName: 'can', src: 'USDA 173801 (drained, rinsed); 540 ml can ≈ 320 g drained, est.' },
+  'rice': { name: 'Long-grain or basmati rice', kcal: 365, p: 7.1, sec: 'pantry', src: 'USDA 168877 (dry)' },
+  'vindaloo-sauce': { name: 'Vindaloo simmer sauce (Patak\'s)', kcal: 96, p: 1.6, sec: 'pantry', ml: true, each: 400, eachName: 'jar', src: 'label, Patak\'s Vindaloo (Canada): 125 ml = 120 kcal, 2 g' },
+  'pizza-sauce': { name: 'Pizza sauce', kcal: 54, p: 2.2, sec: 'pantry', src: 'USDA 172880' },
+  'crushed-tomatoes': { name: 'Canned crushed tomatoes', kcal: 32, p: 1.6, sec: 'pantry', src: 'USDA 170501' },
+  'tomato-paste': { name: 'Tomato paste', kcal: 82, p: 4.3, sec: 'pantry', src: 'USDA 170459' },
+  'salsa': { name: 'Salsa (medium or hot)', kcal: 29, p: 1.5, sec: 'pantry', src: 'USDA 174524' },
+  'light-mayo': { name: 'Light mayonnaise', kcal: 238, p: 0.4, sec: 'pantry', src: 'USDA 2710220' },
+  'mustard': { name: 'Mustard (Dijon or yellow)', kcal: 60, p: 3.7, sec: 'pantry', src: 'USDA 172234' },
+  'pickles': { name: 'Dill pickles', kcal: 12, p: 0.5, sec: 'pantry', src: 'USDA 168558' },
+  'soy-sauce': { name: 'Soy sauce', kcal: 57, p: 8.8, sec: 'pantry', ml: true, src: 'USDA 174277 (×1.08 g/ml)' },
+  'fish-sauce': { name: 'Fish sauce', kcal: 43, p: 6.2, sec: 'pantry', ml: true, src: 'USDA 174531 (×1.22 g/ml)' },
+  'oyster-sauce': { name: 'Oyster sauce', kcal: 51, p: 1.4, sec: 'pantry', src: 'USDA 174529' },
+  'honey': { name: 'Honey', kcal: 304, p: 0.3, sec: 'pantry', src: 'USDA 169640' },
+  'tahini': { name: 'Tahini', kcal: 595, p: 17.0, sec: 'pantry', src: 'USDA 170189' },
+  'almonds': { name: 'Sliced almonds', kcal: 579, p: 21.2, sec: 'pantry', src: 'USDA 170567' },
+  'chia': { name: 'Chia seeds', kcal: 486, p: 16.5, sec: 'pantry', src: 'USDA 170554' },
+  'cocoa': { name: 'Unsweetened cocoa powder', kcal: 228, p: 19.6, sec: 'pantry', src: 'USDA 169593' },
+  'choc-chips': { name: 'Dark chocolate chips (70%)', kcal: 598, p: 7.8, sec: 'pantry', src: 'USDA 170273' },
+  'graham-crackers': { name: 'Graham cracker crumbs', kcal: 430, p: 6.7, sec: 'pantry', src: 'USDA 174957' },
+  'marshmallows': { name: 'Mini marshmallows', kcal: 318, p: 1.8, sec: 'pantry', src: 'USDA 167995' },
+  'panko': { name: 'Panko breadcrumbs', kcal: 395, p: 13.4, sec: 'pantry', src: 'USDA 174928 (dry breadcrumbs)' },
+  'rice-cakes': { name: 'Plain rice cakes', kcal: 387, p: 8.2, sec: 'pantry', each: 9, eachName: 'rice cake', src: 'USDA 170250' },
+  'sweetener': { name: 'Zero-calorie sweetener', kcal: 0, p: 0, sec: 'pantry', src: 'label, Lakanto Monkfruit Classic: 0 kcal' },
+  'zaatar': { name: 'Za\'atar', kcal: 428, p: 13.2, sec: 'pantry', src: 'label, typical za\'atar blend (Tesco Ingredients)' },
+  'mint-extract': { name: 'Pure peppermint extract', kcal: 245, p: 0, sec: 'pantry', ml: true, src: 'est., USDA 173471 vanilla extract (same alcohol base)' },
+
+  // Pantry basics: assumed at home, never on the shopping list, still counted
+  'salt': { name: 'Salt', kcal: 0, p: 0, sec: 'pantry', basic: true, src: 'USDA 173468' },
+  'pepper': { name: 'Black pepper', kcal: 251, p: 10.4, sec: 'pantry', basic: true, src: 'USDA 170931' },
+  'vanilla': { name: 'Vanilla extract', kcal: 245, p: 0.1, sec: 'pantry', ml: true, basic: true, src: 'USDA 173471 (×0.85 g/ml)' },
+  'olive-oil': { name: 'Olive oil', kcal: 807, p: 0, sec: 'pantry', ml: true, basic: true, src: 'USDA 171413 (×0.913 g/ml)' },
+  'oil-spray': { name: 'Cooking oil spray', kcal: 792, p: 0.3, sec: 'pantry', basic: true, src: 'USDA 171430 (about 0.3 g per 1/3-second spray)' },
+  'water': { name: 'Water', kcal: 0, p: 0, sec: 'pantry', ml: true, basic: true, src: '-' },
+  'hot-sauce': { name: 'Hot sauce', kcal: 11, p: 0.5, sec: 'pantry', basic: true, src: 'USDA 174527' },
+  'sriracha': { name: 'Sriracha', kcal: 93, p: 1.9, sec: 'pantry', basic: true, src: 'USDA 171186' },
+  'baking-powder': { name: 'Baking powder', kcal: 53, p: 0, sec: 'pantry', basic: true, src: 'USDA 172803' },
+  'garlic-powder': { name: 'Garlic powder', kcal: 331, p: 16.6, sec: 'pantry', basic: true, src: 'USDA 171325' },
+  'onion-powder': { name: 'Onion powder', kcal: 341, p: 10.4, sec: 'pantry', basic: true, src: 'USDA 171327' },
+  'chili-powder': { name: 'Chili powder', kcal: 282, p: 13.5, sec: 'pantry', basic: true, src: 'USDA 171319' },
+  'cumin': { name: 'Ground cumin', kcal: 375, p: 17.8, sec: 'pantry', basic: true, src: 'USDA 170923' },
+  'paprika': { name: 'Paprika (sweet or smoked)', kcal: 282, p: 14.1, sec: 'pantry', basic: true, src: 'USDA 171329' },
+  'oregano': { name: 'Dried oregano', kcal: 265, p: 9.0, sec: 'pantry', basic: true, src: 'USDA 171328' },
+  'chili-flakes': { name: 'Chili flakes (or cayenne)', kcal: 318, p: 12.0, sec: 'pantry', basic: true, src: 'USDA 170932' },
+  'cinnamon': { name: 'Ground cinnamon', kcal: 247, p: 4.0, sec: 'pantry', basic: true, src: 'USDA 171320' },
+  'turmeric': { name: 'Ground turmeric', kcal: 312, p: 9.7, sec: 'pantry', basic: true, src: 'USDA 172231' },
+  'dill': { name: 'Dried dill', kcal: 253, p: 20.0, sec: 'pantry', basic: true, src: 'USDA 171322' },
+  'allspice': { name: 'Ground allspice', kcal: 263, p: 6.1, sec: 'pantry', basic: true, src: 'USDA 171315' },
+  'cardamom': { name: 'Ground cardamom', kcal: 311, p: 10.8, sec: 'pantry', basic: true, src: 'USDA 170919' },
+
+  // Drinks
+  'tequila': { name: 'Tequila (40%)', kcal: 219, p: 0, sec: 'drinks', ml: true, src: 'USDA 174815, 80 proof (×0.95 g/ml)' },
+  'soda-water': { name: 'Soda water', kcal: 0, p: 0, sec: 'drinks', ml: true, src: 'USDA 174842' },
+  'espresso': { name: 'Espresso or strong coffee', kcal: 9, p: 0.1, sec: 'drinks', ml: true, basic: true, src: 'USDA 171891' },
+};
