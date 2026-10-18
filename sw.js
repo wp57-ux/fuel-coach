@@ -2,7 +2,7 @@
 // whenever you publish changes.
 // Run Coach shares this website (and its cache storage), so only caches
 // named fuel-coach-* are ever touched here.
-const VERSION = 'fuel-coach-v1';
+const VERSION = 'fuel-coach-v2';
 const FONT_CACHE = 'fuel-coach-fonts';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest',

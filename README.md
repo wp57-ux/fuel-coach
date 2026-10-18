@@ -25,6 +25,8 @@ instead of a fight.
 
 - Your usual foods pre-loaded; fix the numbers once from your labels
 - Batch recipes: enter the whole pot and the number of portions
+- No label? Estimate with your hand: palms of protein, cupped hands of carbs,
+  thumbs of fats and fists of veg, plus 20% when eating out
 - Barcode scanning with the phone camera (Chrome's BarcodeDetector), looked up
   in [Open Food Facts](https://world.openfoodfacts.org). Only the barcode
   number is sent. Unknown products are typed in from the label once

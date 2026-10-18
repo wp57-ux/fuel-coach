@@ -299,8 +299,8 @@ select {
 .empty { padding: 24px 0; text-align: center; color: var(--ink-3); font-size: 14px; }
 
 /* ---- food picker ---- */
-.pick-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 4px; }
-.pick-tools .btn { min-height: 52px; padding: 0 8px; flex-direction: column; gap: 2px; font-size: 13px; }
+.pick-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0 4px; }
+.pick-tools .btn { min-height: 54px; padding: 0 4px; flex-direction: column; gap: 2px; font-size: 12.5px; white-space: nowrap; }
 .pick-tools svg { width: 20px; height: 20px; }
 .plist { list-style: none; margin: 0; padding: 0; }
 .prow { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; width: 100%; padding: 11px 0; border-bottom: 1px solid var(--line); text-align: left; }
@@ -321,6 +321,15 @@ select {
 .qty-total b { font-family: var(--display); font-weight: 900; font-size: 34px; line-height: 1; }
 .qty-total b small { font-family: var(--body); font-size: 12px; color: var(--ink-3); margin-left: 3px; }
 .qty-total .pk { color: var(--pro); }
+
+/* ---- estimate ---- */
+.est-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.est-row b { display: block; font-size: 15px; font-weight: 700; }
+.est-row small { display: block; font-size: 12px; color: var(--ink-3); line-height: 1.3; margin-top: 2px; }
+.est-stp { display: grid; grid-template-columns: 44px 42px 44px; align-items: center; text-align: center; }
+.est-stp button { height: 44px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line-2); font-size: 22px; font-weight: 700; }
+.est-stp button:active { transform: scale(.94); }
+.est-stp b { font-family: var(--display); font-weight: 800; font-size: 26px; }
 
 /* ---- recipes ---- */
 .rlist { display: grid; gap: 10px; }

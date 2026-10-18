@@ -490,6 +490,7 @@ function eveningHTML(dt, eaten, list) {
 const ICON = {
   scan: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3M8 8v8M11 8v8M14 8v8M17 8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  hand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4.5a1.5 1.5 0 0 1 3 0V11M14 10.5V6a1.5 1.5 0 0 1 3 0v7c0 4-2.5 7-6 7-2.5 0-4-1.2-5.5-3.5L4 13.8a1.5 1.5 0 0 1 2.4-1.8L8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   pot: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 6.5h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 
@@ -506,6 +507,7 @@ function pickerHTML() {
     <div class="inp text"><input id="pkQ" type="search" placeholder="Search your foods and recipes" autocomplete="off" value="${esc(picker.q)}"></div>
     <div class="pick-tools">
       <button class="btn" data-act="scan">${ICON.scan}Scan</button>
+      <button class="btn" data-act="est-open">${ICON.hand}Estimate</button>
       <button class="btn" data-act="food-new">${ICON.plus}New food</button>
       <button class="btn" data-act="batch-new">${ICON.pot}Batch</button>
     </div>
@@ -550,6 +552,49 @@ function qtyHTML() {
     ${x.food && foodById(x.food) ? `<button class="btn ghost wide" data-act="food-edit" data-id="${x.food}">Edit this food</button>` : ''}`;
 }
 
+// ---- estimate with your hand ----------------------------------------------------
+// Hand portions for a man's hand. Eating out adds 20% for the butter and oil
+// restaurants cook with.
+const HAND = [
+  { k: 'palm', name: 'Palms', sub: 'Meat, fish, eggs, tofu', kcal: 150, p: 25 },
+  { k: 'cup', name: 'Cupped hands', sub: 'Rice, pasta, fries, bread, potatoes, fruit', kcal: 120, p: 3 },
+  { k: 'thumb', name: 'Thumbs', sub: 'Cheese, sauce, dressing, oil, butter, nuts', kcal: 100, p: 1 },
+  { k: 'fist', name: 'Fists', sub: 'Vegetables and salad', kcal: 25, p: 1.5 },
+];
+const OUT_EXTRA = 0.2;
+
+function estTotals(e) {
+  let kcal = 0, p = 0;
+  for (const h of HAND) { kcal += h.kcal * e[h.k]; p += h.p * e[h.k]; }
+  if (e.out) kcal *= 1 + OUT_EXTRA;
+  return { kcal: Math.round(kcal / 5) * 5, p: Math.round(p) };
+}
+
+const estTotHTML = t => `<div><b>${fmt(t.kcal)}<small>kcal</small></b></div><div><b class="pk">${t.p}<small>g protein</small></b></div>`;
+
+function openEstimate() {
+  if (!picker) picker = { slot: form?.slot || T.slotAt(nowH()), q: '' };
+  picker.step = 'est';
+  picker.est = { palm: 0, cup: 0, thumb: 0, fist: 0, out: false, save: false, name: '' };
+  if ($('#sheet').classList.contains('on')) setSheet(estHTML()); else openSheet(estHTML(), 'tall');
+}
+
+function estHTML() {
+  const e = picker.est;
+  return `<h3>Estimate it</h3>
+    <p>Count what’s on the plate with your hand. Halves are fine.</p>
+    <p class="note">A palm is its size and thickness, without fingers. A cupped hand is what fits in it. A thumb is the whole thumb.</p>
+    ${HAND.map(h => `<div class="est-row"><span><b>${h.name}</b><small>${h.sub} · ${h.kcal} kcal${h.p >= 3 ? `, ${h.p} g protein` : ''} each</small></span>
+      <div class="est-stp"><button data-act="est-step" data-k="${h.k}" data-v="-0.5" aria-label="Less">−</button><b id="est-${h.k}">${fq(e[h.k])}</b><button data-act="est-step" data-k="${h.k}" data-v="0.5" aria-label="More">+</button></div></div>`).join('')}
+    <button class="toggle" role="switch" aria-checked="${e.out}" data-act="est-out"><span><b>Eating out</b><small>Adds 20% for the butter and oil restaurants cook with</small></span><i></i></button>
+    <div class="qty-total" id="estTot" style="margin-top:14px">${estTotHTML(estTotals(e))}</div>
+    <label class="field"><span>Name it <small style="display:inline;margin:0">optional</small></span><div class="inp text"><input id="estName" maxlength="60" placeholder="e.g. Shawarma plate" value="${esc(e.name)}"></div></label>
+    <span class="eyebrow">When</span>
+    ${slotSeg(picker.slot)}
+    <button class="toggle" role="switch" aria-checked="${e.save}" data-act="est-save"><span><b>Save to your usuals</b><small>For a meal you’ll have again</small></span><i></i></button>
+    <div class="sheet-btns"><button class="btn ghost" data-act="pk-back">Back</button><button class="btn primary" data-act="est-log">Log it</button></div>`;
+}
+
 // ---- food form -------------------------------------------------------------------
 
 function openFoodForm(f, opts = {}) {
@@ -563,6 +608,7 @@ function foodFormHTML(f) {
   return `<h3>${form.id ? 'Edit food' : 'New food'}</h3>
     ${form.from === 'off' ? '<p class="note warn">From Open Food Facts. Check the numbers against the label once.</p>' : ''}
     ${form.barcode && form.from !== 'off' && !form.id ? '<p class="note">Not in the food database. Type it in from the label, and the app remembers the barcode.</p>' : ''}
+    ${!form.id && !form.barcode ? '<button class="btn small" style="margin:-4px 0 14px" data-act="est-open">No label? Estimate it with your hand</button>' : ''}
     <label class="field"><span>Name</span><div class="inp text"><input id="ffName" maxlength="60" value="${esc(f.name || '')}" placeholder="e.g. Oikos protein yogurt"></div></label>
     <label class="field"><span>Serving</span><div class="inp text"><input id="ffServ" maxlength="40" value="${esc(f.serving || '')}" placeholder="e.g. 1 cup (175 g)"></div></label>
     ${per ? `<label class="field"><span>Serving size</span><div class="inp"><input id="ffG" type="number" inputmode="decimal" min="1" max="2000" value="${f.g ?? 100}"><em>g</em></div>
@@ -1223,7 +1269,10 @@ const actions = {
   'pk-slot'(el) {
     picker.slot = el.dataset.v;
     if (picker.step === 'qty') setSheet(qtyHTML());
-    else { $$('[data-act=pk-slot]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === picker.slot)); $('#pkList').innerHTML = pickListHTML(); }
+    else {
+      $$('[data-act=pk-slot]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === picker.slot));
+      if ($('#pkList')) $('#pkList').innerHTML = pickListHTML();
+    }
   },
   'pk-item'(el) {
     const item = itemOfKey(el.dataset.key);
@@ -1234,6 +1283,32 @@ const actions = {
   'pk-qty'(el) { picker.qty = Number(el.dataset.v); setSheet(qtyHTML()); },
   'pk-step'(el) { picker.qty = Math.max(0.25, Math.min(10, Math.round((picker.qty + Number(el.dataset.v)) * 4) / 4)); setSheet(qtyHTML()); },
   'pk-back'() { picker.step = 'list'; setSheet(pickerHTML()); },
+  'est-open'() { openEstimate(); },
+  'est-step'(el) {
+    const e = picker.est, k = el.dataset.k;
+    e[k] = Math.max(0, Math.min(10, e[k] + Number(el.dataset.v)));
+    $(`#est-${k}`).textContent = fq(e[k]);
+    $('#estTot').innerHTML = estTotHTML(estTotals(e));
+  },
+  'est-out'(el) {
+    picker.est.out = !picker.est.out;
+    el.setAttribute('aria-checked', picker.est.out);
+    $('#estTot').innerHTML = estTotHTML(estTotals(picker.est));
+  },
+  'est-save'(el) { picker.est.save = !picker.est.save; el.setAttribute('aria-checked', picker.est.save); },
+  'est-log'() {
+    const e = picker.est, t = estTotals(e);
+    if (!t.kcal) return toast('Add what’s on the plate first');
+    const name = $('#estName').value.trim().slice(0, 60) || 'Estimated meal';
+    let item = { name, kcal: t.kcal, p: t.p, serving: 'estimated' };
+    if (e.save) {
+      const f = { id: uid(), name, serving: '1 plate (estimated)', kcal: t.kcal, p: t.p, slot: picker.slot, fav: true,
+        est: { palm: e.palm, cup: e.cup, thumb: e.thumb, fist: e.fist, out: e.out } };
+      state.foods.push(f);
+      item = itemOfFood(f);
+    }
+    logAndToast(item, 1, picker.slot);
+  },
   'pk-log'() {
     const { item, qty, slot } = picker;
     if (picker.entry) {
