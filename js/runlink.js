@@ -22,12 +22,16 @@ const kgOf = s => (Number(s.weight) || 0) * (s.units === 'metric' ? 1 : KG_PER_L
 // Same estimates Run Coach uses: the ACSM cycling equation (or effort-zone
 // METs without watts), and the ACSM walking/running equations.
 function rideKcal(s) {
+  // Run Coach saves the calories at check-in (the bike's own number if you
+  // typed it in). Older rides fall back to the same estimate.
+  if (Number.isFinite(s.kcal)) return Math.round(s.kcal);
   const kg = kgOf(s);
+  const watts = (s.unit || (s.watts ? 'watts' : 'feel')) === 'watts';
   let kcal = 0;
   for (const [type, sec] of Object.entries(s.byType || {})) {
     const z = ZONE[type];
     if (!z || !sec) continue;
-    const w = s.power ? Math.max(20, Math.round(s.power * PCT[z] / 5) * 5) : null;
+    const w = watts && s.power ? Math.max(20, Math.round(s.power * PCT[z] / 5) * 5) : null;
     const perMin = w ? (1.8 * w * 6.12 + 7 * kg) * 5 / 1000 : MET[z] * kg * 3.5 * 5 / 1000;
     kcal += perMin * sec / 60;
   }
@@ -35,6 +39,7 @@ function rideKcal(s) {
 }
 
 function runKcal(s) {
+  if (Number.isFinite(s.kcal)) return Math.round(s.kcal);
   const kg = kgOf(s), sp = s.speeds || {}, g = (sp.incline || 0) / 100, m = MPS[s.units] || MPS.imperial;
   const run = (sp.runSpeed || 0) * m, walk = (sp.walkSpeed || 0) * m;
   const perMin = (vo2, sec) => (vo2 * kg / 1000) * 5 * sec / 60;
