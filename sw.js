@@ -2,7 +2,7 @@
 // whenever you publish changes.
 // Run Coach shares this website (and its cache storage), so only caches
 // named fuel-coach-* are ever touched here.
-const VERSION = 'fuel-coach-v3';
+const VERSION = 'fuel-coach-v4';
 const FONT_CACHE = 'fuel-coach-fonts';
 const SHELL = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest',
@@ -13,7 +13,9 @@ const SHELL = [
 const DEV = ['localhost', '127.0.0.1'].includes(self.location.hostname);
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's own short-term cache, so a new version
+  // never gets stored with a file left over from the old one.
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

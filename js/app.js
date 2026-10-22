@@ -7,6 +7,9 @@ import { workoutsOn, readRunCoach, runCoachWeight } from './runlink.js';
 import * as Scan from './scan.js';
 
 const { SLOTS, SLOT } = T;
+// Shown in Settings, so you can tell which version your phone is running.
+// Keep in step with VERSION in sw.js.
+const APP_VERSION = '4 · Oct 22';
 const QTYS = [0.5, 1, 1.5, 2, 3];
 const WINDOW = { morning: '8–10:30 am', lunch: '12–1:30 pm', snack: '3–4:30 pm', dinner: '6:30–8 pm', evening: 'after 8:30 pm' };
 // What you said is at home, and what your usual cooks need.
@@ -943,7 +946,7 @@ function settingsHTML() {
       <div class="row"><button class="btn" data-act="export">Save a backup</button><label class="btn">Restore<input id="importFile" type="file" accept="application/json,.json" hidden></label></div>
       <button class="btn ghost wide" data-act="reset" style="color:var(--red)">Erase everything</button>
     </section>
-    <p class="foot">Fuel Coach · your data stays on this phone · not medical advice</p>`;
+    <p class="foot">Fuel Coach version ${APP_VERSION} · your data stays on this phone · not medical advice</p>`;
 }
 
 // ---- onboarding ----------------------------------------------------------------------
@@ -1764,8 +1767,30 @@ window.addEventListener('appinstalled', () => {
   if (state.onboarded) render();
 });
 
+// Updates. An installed app can sit open in the background for days and never
+// reload, so check for a new version whenever it comes back on screen, and
+// switch to it straight away, unless you're in the middle of something.
+let updateReady = false;
+function applyUpdate() {
+  if (!updateReady || $('#sheet').classList.contains('on') || $('#screen').classList.contains('on')) return;
+  updateReady = false;
+  location.reload();
+}
+
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(e => console.warn('Service worker failed', e));
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') return;
+      reg.update().catch(() => {});
+      applyUpdate();
+    });
+  }).catch(e => console.warn('Service worker failed', e));
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return;   // the very first install: nothing to refresh
+    updateReady = true;
+    applyUpdate();
+  });
 }
 
 persist();
