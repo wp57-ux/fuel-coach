@@ -9,7 +9,7 @@ import * as Scan from './scan.js';
 const { SLOTS, SLOT } = T;
 // Shown in Settings, so you can tell which version your phone is running.
 // Keep in step with VERSION in sw.js.
-const APP_VERSION = '4 · Oct 22';
+const APP_VERSION = '5 · Nov 1';
 const QTYS = [0.5, 1, 1.5, 2, 3];
 const WINDOW = { morning: '8–10:30 am', lunch: '12–1:30 pm', snack: '3–4:30 pm', dinner: '6:30–8 pm', evening: 'after 8:30 pm' };
 // What you said is at home, and what your usual cooks need.

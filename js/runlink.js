@@ -53,7 +53,7 @@ export function workoutsOn(key, rc = readRunCoach()) {
   const out = [];
   for (const s of rc.sessions.filter(on)) {
     out.push(s.mode === 'bike'
-      ? { kind: 'ride', label: `Ride · stage ${s.stage}`, kcal: rideKcal(s) }
+      ? { kind: 'ride', label: `${s.machine === 'elliptical' ? 'Elliptical' : 'Ride'} · stage ${s.stage}`, kcal: rideKcal(s) }
       : { kind: 'run', label: `Run · stage ${s.stage}`, kcal: runKcal(s) });
   }
   for (const s of (rc.lifts || []).filter(on)) {
